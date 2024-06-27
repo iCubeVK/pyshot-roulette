@@ -1,4 +1,5 @@
 @echo off
+echo Downloading prerequisites...
 
 pip install colorama
 cls

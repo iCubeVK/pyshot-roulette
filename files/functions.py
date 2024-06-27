@@ -2,60 +2,62 @@ from utilities import *
 from colorama import *
 from random import randint
 
-def asklifes():  #-> lifes: int
+def asklifes(language):  #-> lifes: int
     while True:
-        animation1("Inserisci Numero Vite(da 1 a 5), oppure Random: ")
+        lifes: int = 0
+        animation1(language['asklifes'])
         input1 = fixtext(input())
-        if input1 == "random" or input1 == 'r':
-            lifes: int = randint(1, 5)
-            break
-        else:
-            try:
-                lifes: int = int(input1)
-                break
-            except TypeError:
-                animation2('Input non Valido!')
-    animation2(f'Numero vite per player: {lifes}\n')
+        try:
+            if 1 <= int(input1) <= 5:
+                lifes = input1
+        except ValueError: pass
+        if input1 == 'r' or input1 == 'random':
+            lifes = randint(1,5)
+        if 1 <= lifes <= 5: break
+        else: animation2(language['errorvaltxt'])
+    animation2(f'{language['answerlifes']}: {lifes}\n')
     return lifes
 
-def askplayers():  #-> totplayers: int
-    return inputint('Inserisci Numero Giocatori(da 1 a 4): ', 1, 4)
+def askplayers(language):  #-> totplayers: int
+    return inputint(language['askplayers'], 1, 4)
 
-def initgame(totplayers, lifes):  #-> players: list
+def initgame(language, totplayers, lifes):  #-> players: list
     init(autoreset=True)
     just_fix_windows_console()
     global bot
     #sigarette(0), manette(1), birra(2), coltellino(3), vetrino(4), polarizzatore(5), telefono(6), oggTot(7)
     #solo per bot: conoscenza[]
-    Player1 = [input('Inserisci il nome di Player1: '), lifes, [0, 0, 0, 0, 0, 0, 0, 0]]
+    Player1 = [input(f'{language['askname']} Player1: '), lifes, [0, 0, 0, 0, 0, 0, 0, 0]]
     players = [Player1]
     bot = ['Bot', lifes, [0, 0, 0, 0, 0, 0, 0, 0], []]
     if totplayers == 1:
         players.append(bot)
     if totplayers >= 2:
-        Player2 = [input('Inserisci il nome di Player2: '), lifes, [0, 0, 0, 0, 0, 0, 0, 0]]
+        Player2 = [input(f'{language['askname']} Player2: '), lifes, [0, 0, 0, 0, 0, 0, 0, 0]]
         players.append(Player2)
     if totplayers >= 3:
-        Player3 = [input('Inserisci il nome di Player3: '), lifes, [0, 0, 0, 0, 0, 0, 0, 0]]
+        Player3 = [input(f'{language['askname']} Player3: '), lifes, [0, 0, 0, 0, 0, 0, 0, 0]]
         players.append(Player3)
     if totplayers == 4:
-        Player4 = [input('Inserisci il nome di Player4: '), lifes, [0, 0, 0, 0, 0, 0, 0, 0]]
+        Player4 = [input(f'{language['askname']} Player4: '), lifes, [0, 0, 0, 0, 0, 0, 0, 0]]
         players.append(Player4)
     return players
 
-def checkifdead(players, turns):  #-> players: list
+def checkifdead(language, players, turns):  #-> players: list
     if players[turns[0]][1] < 1:
-        animation1(f'{players[turns[0]][0]} è morto!\n')
+        animation1(f'{Fore.RED}{players[turns[0]][0]} {language['isdead']}\n')
         players.remove(players[turns[0]])
     if players[turns[1]][1] < 1:
-        animation1(f'{players[turns[1]][0]} è morto!\n')
+        animation1(f'{Fore.RED}{players[turns[1]][0]} {language['isdead']}\n')
         players.remove(players[turns[1]])
     return players
 
-def regenprojectiles(players):  #-> iprojectile, projectiles
+def regenprojectiles(language, players):  #-> iprojectile, projectiles
     global bot
-    animation1('Rigenerazione Proiettili')
-    animation2('...', 1)
+    animation1(language['projregen'])
+    for letter in list('...'):
+        animation1(letter)
+    print()
     while True:
         projectiles = []
         iprojectile = [0, 0, 0, 1, 0, 0, randint(3, 12)]
@@ -68,11 +70,12 @@ def regenprojectiles(players):  #-> iprojectile, projectiles
             else:
                 iprojectile[1] += 1
         iprojectile[0] = iprojectile[1] + iprojectile[2]
-        if iprojectile[1] > (1 / 4) * iprojectile[0] and iprojectile[2] > (1 / 4) * iprojectile[0] and iprojectile[0] == iprojectile[6]: break
-    animation2(f'{Back.GREEN}Proiettili Vuoti: {iprojectile[2]}; {Back.YELLOW}Proiettili Pieni: {iprojectile[1]}; {Back.BLUE}Proiettili Totali: {iprojectile[0]}\n')
+        if iprojectile[1] > (1/4) * iprojectile[0] and iprojectile[2] > (1/4) * iprojectile[0] and iprojectile[0] == iprojectile[6]: break
+    animation2(f'{Back.GREEN}{language['falseproj']}: {iprojectile[2]}; {Back.YELLOW}{language['trueproj']}: '
+               f'{iprojectile[1]}; {Back.BLUE}{language['totproj']}: {iprojectile[0]}\n')
     return iprojectile, projectiles
 
-def genoggetti(players):  #-> players: list
+def genoggetti(language, players):  #-> players: list
     for player in players:
         for a in range(2):
             player[2][7] = player[2][0] + player[2][1] + player[2][2] + player[2][3] + player[2][4] + player[2][5] + player[2][6]
@@ -82,34 +85,37 @@ def genoggetti(players):  #-> players: list
             else:
                 r = randint(1, 7)
                 if r == 1:
-                    animation2(f'{player[0]} ha ricevuto un pacchetto di sigarette')
+                    animation2(f'{player[0]} {language['recieved']} {language['cigarettes']}')
                     player[2][0] += 1
                 elif r == 2:
-                    animation2(f'{player[0]} ha ricevuto un paio di manette')
+                    animation2(f'{player[0]} {language['recieved']} {language['handcuffs']}')
                     player[2][1] += 1
                 elif r == 3:
-                    animation2(f'{player[0]} ha ricevuto una lattina di birra')
+                    animation2(f'{player[0]} {language['recieved']} {language['beer']}')
                     player[2][2] += 1
                 elif r == 4:
-                    animation2(f'{player[0]} ha ricevuto un coltellino')
+                    animation2(f'{player[0]} {language['recieved']} {language['handsaw']}')
                     player[2][3] += 1
                 elif r == 5:
-                    animation2(f'{player[0]} ha ricevuto un vetrino')
+                    animation2(f'{player[0]} {language['recieved']} {language['glass']}')
                     player[2][4] += 1
                 elif r == 6:
-                    animation2(f'{player[0]} ha ricevuto un polarizzatore')
+                    animation2(f'{player[0]} {language['recieved']} {language['inverter']}')
                     player[2][5] += 1
                 elif r == 7:
-                    animation2(f'{player[0]} ha ricevuto un telefono')
+                    animation2(f'{player[0]} {language['recieved']} {language['phone']}')
                     player[2][6] += 1
     print()
     return players
 
 def ctrlturni(players, iprojectile, turns):  #-> iprojectile: list, turns: list
-    if iprojectile[5] == 1:
-        animation2(f'Manette verranno rimosse dopo questo turno (a {players[turns[1]][0]})\turns[0]')
-        iprojectile[5] = 0
+    if iprojectile[5] == 2:
+        animation2(f'Manette verranno rimosse dopo questo turno (a {players[turns[1]][0]})\n')
+        iprojectile[5] = 1
     else:
+        if iprojectile[5] == 1:
+            animation2(f'Manette sono state rimosse a {players[turns[1]][0]}\n')
+            iprojectile[5] = 0
         if len(players) == 2:
             if turns[0] == 0: turns = [1,0]
             else: turns = [0,1]
@@ -138,11 +144,11 @@ def usasigarette(players, turns, time=0, errortxt='Non hai Sigarette!'):
 
 def usamanette(players, turns, iprojectile, time=0, errortxt='Non hai manette!'):
     if players[turns[0]][2][1] > 0:
-        if iprojectile[5] == 1:
-            animation2(f'Non puoi usare piu di un paio di manette per turno!')
+        if iprojectile[5] > 0:
+            animation2(f'Non puoi usare le manette adesso!')
         else:
             players[turns[0]][2][1] -= 1
-            iprojectile[5] = 1
+            iprojectile[5] = 2
             animation2(f'Manette Usate su {players[turns[1]][0]}')
             sleep(time)
     else:
