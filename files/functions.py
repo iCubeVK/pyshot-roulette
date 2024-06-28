@@ -85,36 +85,36 @@ def genoggetti(language, players):  #-> players: list
             else:
                 r = randint(1, 7)
                 if r == 1:
-                    animation2(f'{player[0]} {language['recieved']} {language['cigarettes']}')
+                    animation2(f'{player[0]} {language['recieved']} {language['getcigarettes']}')
                     player[2][0] += 1
                 elif r == 2:
-                    animation2(f'{player[0]} {language['recieved']} {language['handcuffs']}')
+                    animation2(f'{player[0]} {language['recieved']} {language['gethandcuffs']}')
                     player[2][1] += 1
                 elif r == 3:
-                    animation2(f'{player[0]} {language['recieved']} {language['beer']}')
+                    animation2(f'{player[0]} {language['recieved']} {language['getbeer']}')
                     player[2][2] += 1
                 elif r == 4:
-                    animation2(f'{player[0]} {language['recieved']} {language['handsaw']}')
+                    animation2(f'{player[0]} {language['recieved']} {language['gethandsaw']}')
                     player[2][3] += 1
                 elif r == 5:
-                    animation2(f'{player[0]} {language['recieved']} {language['glass']}')
+                    animation2(f'{player[0]} {language['recieved']} {language['getglass']}')
                     player[2][4] += 1
                 elif r == 6:
-                    animation2(f'{player[0]} {language['recieved']} {language['inverter']}')
+                    animation2(f'{player[0]} {language['recieved']} {language['getinverter']}')
                     player[2][5] += 1
                 elif r == 7:
-                    animation2(f'{player[0]} {language['recieved']} {language['phone']}')
+                    animation2(f'{player[0]} {language['recieved']} {language['getphone']}')
                     player[2][6] += 1
     print()
     return players
 
-def ctrlturni(players, iprojectile, turns):  #-> iprojectile: list, turns: list
+def ctrlturni(language, players, iprojectile, turns):  #-> iprojectile: list, turns: list
     if iprojectile[5] == 2:
-        animation2(f'Manette verranno rimosse dopo questo turno (a {players[turns[1]][0]})\n')
+        animation2(f'{language['removehandcuffs1']} {players[turns[1]][0]}\n')
         iprojectile[5] = 1
     else:
         if iprojectile[5] == 1:
-            animation2(f'Manette sono state rimosse a {players[turns[1]][0]}\n')
+            animation2(f'{language['removehandcuffs2']} {players[turns[1]][0]}\n')
             iprojectile[5] = 0
         if len(players) == 2:
             if turns[0] == 0: turns = [1,0]
@@ -131,290 +131,291 @@ def ctrlturni(players, iprojectile, turns):  #-> iprojectile: list, turns: list
     return iprojectile, turns
 
 
-def usasigarette(players, turns, time=0, errortxt='Non hai Sigarette!'):
+def usasigarette(language, players, turns, time=0):
     if players[turns[0]][2][0] > 0:
         players[turns[0]][2][0] -= 1
         players[turns[0]][1] += 1
-        animation2(f"+1 Vita per {players[turns[0]][0]}\nAdesso ha {players[turns[0]][1]} vite", time)
+        animation2(f"{language['+1life']} {players[turns[0]][0]}\n{language['nowhas']} {players[turns[0]][1]} {language['lifes']}", time)
         sleep(time)
     else:
-        animation2(errortxt)
+        animation2(language['errortxtcig'])
     return players
 
 
-def usamanette(players, turns, iprojectile, time=0, errortxt='Non hai manette!'):
+def usamanette(language, players, turns, iprojectile, time=0):
     if players[turns[0]][2][1] > 0:
         if iprojectile[5] > 0:
-            animation2(f'Non puoi usare le manette adesso!')
+            animation2(language['nousehandcuffs'])
         else:
             players[turns[0]][2][1] -= 1
             iprojectile[5] = 2
-            animation2(f'Manette Usate su {players[turns[1]][0]}')
+            animation2(f'{language['handcuffsuse']} {players[turns[1]][0]}')
             sleep(time)
     else:
-        animation2(errortxt)
+        animation2(language['errortxtcuffs'])
     return players, iprojectile
 
 
-def usabirra(players, turns, iprojectile, projectiles, time=0, errortxt='Non hai Birra!'):
+def usabirra(language, players, turns, iprojectile, projectiles, time=0):
     if players[turns[0]][2][2] > 0:
         if projectiles[iprojectile[4]] == 1:
-            animation2(f'{Back.RED}Proiettile espulso Vero')
+            animation2(f'{Back.RED}{language['expelledreal']}')
         else:
-            animation2(f'{Back.CYAN}Proiettile espulso Finto')
+            animation2(f'{Back.CYAN}{language['expelledfake']}')
         iprojectile[0] -= 1
         iprojectile[4] += 1
         players[turns[0]][2][2] -= 1
         sleep(time)
     else:
-        animation2(errortxt)
+        animation2(language['errortxtbeer'])
     return players, iprojectile, projectiles
 
 
-def usacoltellino(players, turns, iprojectile, time=0, errortxt0='Non puoi usare piu di un coltellino per turno!', errortxt1='Non hai Birra!'):
+def usacoltellino(language, players, turns, iprojectile, time=0):
     if players[turns[0]][2][3] > 0:
         if iprojectile[3] == 2:
-            animation2(errortxt0)
+            animation2(language['nousesaw'])
         else:
             players[turns[0]][2][3] -= 1
             iprojectile[3] = 2
-            animation2(f'Coltellino usato (Danno x2 al prossimo utilizzo del fucile)')
+            animation2(language['usesaw'])
             sleep(time)
     else:
-        animation2(errortxt1)
+        animation2(language['errortxtsaw'])
     return players, iprojectile
 
 
-def usavetrino(players, turns, iprojectile, projectiles, time=0, errortxt='Non hai Vetrini!'):
+def usavetrino(language, players, turns, iprojectile, projectiles, time=0):
     if players[turns[0]][2][4] > 0:
         players[turns[0]][2][4] -= 1
         if projectiles[iprojectile[4]] == 0:
-            animation2(f"{Back.GREEN}Il proiettile selezionato adesso e' vuoto")
+            animation2(f"{Back.GREEN} {language['selectedreal']}")
         else:
-            animation2(f"{Back.YELLOW}Il proiettile selezionato adesso e' pieno")
+            animation2(f"{Back.YELLOW} {language['selectedfake']}")
         sleep(time)
     else:
-        animation2(errortxt)
+        animation2(language['errortxtglass'])
     return players
 
 
-def usapolarizzatore(players, turns, iprojectile, projectiles, time=0, errortxt='Non hai Polarizzatori!'):
+def usapolarizzatore(language, players, turns, iprojectile, projectiles, time=0):
     if players[turns[0]][2][5] > 0:
         players[turns[0]][2][5] -= 1
         if projectiles[iprojectile[4]] == 1:
             projectiles[iprojectile[4]] = 0
         else:
             projectiles[iprojectile[4]] = 1
-        animation2(f"Proiettile polarizzato")
+        animation2(language['inverted'])
         sleep(time)
     else:
-        animation2(errortxt)
+        animation2(language['errortxtinverter'])
     return players, projectiles
 
 
-def usatelefono(players, turns, projectiles, iprojectile, time=0, errortxt="Non hai Telefoni!"):
+def usatelefono(language, players, turns, projectiles, iprojectile, time=0):
     global bot
     if players[turns[0]][2][6] > 0:
         players[turns[0]][2][6] -= 1
         r = randint(iprojectile[4], iprojectile[6] - 1)
         if projectiles[r] == 1:
-            animation2(f'{Back.YELLOW}Il proiettile {r + 1} è pieno')
+            animation2(f'{Back.YELLOW}{language['theproj']} {r + 1} {language['isreal']}')
         else:
-            animation2(f'{Back.GREEN}Il proiettile {r + 1} è vuoto')
+            animation2(f'{Back.GREEN}{language['theproj']} {r + 1} {language['isfake']}')
         if bot in players: players[1][3][r] = 1
         sleep(time)
     else:
-        animation2(errortxt)
+        animation2(language['errortxtphone'])
     return players
 
 
-def usafucileiopieno(players, turns, iprojectile):
+def usafucileiopieno(language, players, turns, iprojectile):
     iprojectile[4] += 1
     iprojectile[0] -= 1
     players[turns[0]][1] -= iprojectile[3]
     if iprojectile[3] == 1:
-        animation2(f'{Back.RED}-{iprojectile[3]} vita per te{Style.RESET_ALL}\nFine turno\n')
+        animation2(f'{Back.RED}-{iprojectile[3]} {language['-1lifefor']} {language['u']}{Style.RESET_ALL}\n{language['endofturn']}\n')
     else:
-        animation2(f'{Back.RED}-{iprojectile[3]} vite per te{Style.RESET_ALL}\nFine turno\n')
+        animation2(f'{Back.RED}-{iprojectile[3]} {language['-2lifesfor']} {language['u']}{Style.RESET_ALL}\n{language['endofturn']}\n')
     iprojectile[3] = 1
     return players, iprojectile
 
 
-def usafucileiovuoto(iprojectile):
+def usafucileiovuoto(language, iprojectile):
     iprojectile[4] += 1
     iprojectile[0] -= 1
-    animation2(f'{Back.CYAN}Il proiettile era vuoto')
+    animation2(f'{Back.CYAN}{language['wasemptyproj']}')
     iprojectile[3] = 1
     return iprojectile
 
 
-def usafucilenemicopieno(players, turns, iprojectile):
+def usafucilenemicopieno(language, players, turns, iprojectile):
     iprojectile[4] += 1
     iprojectile[0] -= 1
     players[turns[1]][1] -= iprojectile[3]
     if iprojectile[3] == 1:
-        animation2(f'{Back.RED}-{iprojectile[3]} vita per {players[turns[1]][0]}{Style.RESET_ALL}\nFine turno\n')
+        animation2(f'{Back.RED}-{iprojectile[3]} {language['-1lifefor']} {players[turns[1]][0]}{Style.RESET_ALL}\n{language['endofturn']}\n')
     else:
-        animation2(f'{Back.RED}-{iprojectile[3]} vite per {players[turns[1]][0]}{Style.RESET_ALL}\nFine turno\n')
+        animation2(f'{Back.RED}-{iprojectile[3]} {language['-2lifesfor']} {players[turns[1]][0]}{Style.RESET_ALL}\n{language['endofturn']}\n')
     iprojectile[3] = 1
     return players, iprojectile
 
 
-def usafucilenemicovuoto(iprojectile):
+def usafucilenemicovuoto(language, iprojectile):
     iprojectile[4] += 1
     iprojectile[0] -= 1
-    animation2(f'{Back.CYAN}Il proiettile era vuoto{Style.RESET_ALL}\nFine turno\n')
+    animation2(f'{Back.CYAN}{language['wasemptyproj']}{Style.RESET_ALL}\n{language['endofturn']}\n')
     iprojectile[3] = 1
     return iprojectile
 
 
-def botgameplay(players, turns, iprojectile, projectiles):  #-> player: list, iprojectile: list
+def botgameplay(language, players, turns, iprojectile, projectiles):  #-> player: list, iprojectile: list
     if players[turns[0]][0] == 'Bot':
-        animation1(f'{Back.BLUE}Turno di Bot(Vite: {players[1][1]}):\n')
+        animation1(f'{Back.BLUE}{language['turnofbot']} {players[1][1]}{language['lifes']}):\n')
         while 1:
             if players[1][2][0] > 0:
-                animation1('Bot ha usato sigarette: ')
-                players = usasigarette(players, turns, 1)
+                animation1(language['botusedcig'])
+                players = usasigarette(language, players, turns, 1)
             for a in range(randint(0,2)):
                 if randint(0,100) <= 60 and players[1][2][1] > 0 and iprojectile[5] != 1:
-                    animation1('Bot ha usato manette: ')
-                    players, iprojectile = usamanette(players, turns, iprojectile, 1)
+                    animation1(language['botusedcuffs'])
+                    players, iprojectile = usamanette(language, players, turns, iprojectile, 1)
                 if randint(0,100) <= 50 and players[1][2][2] > 0:
-                    animation1('Bot ha usato birra: ')
-                    players, iprojectile, projectiles = usabirra(players, turns, iprojectile, projectiles, 1)
+                    animation1(language['botusedbeer'])
+                    players, iprojectile, projectiles = usabirra(language, players, turns, iprojectile, projectiles, 1)
                     if controllo(projectiles, iprojectile) == 1: break
                 if randint(0,100) <= 10 and players[1][2][3] > 0 and iprojectile[3] != 2:
-                    animation1('Bot ha usato coltellino: ')
-                    players, iprojectile = usacoltellino(players, turns, iprojectile, 1)
+                    animation1(language['botusedsaw'])
+                    players, iprojectile = usacoltellino(language, players, turns, iprojectile, 1)
                 if randint(0,100) <= 80 and players[1][2][4] > 0 and players[1][3][iprojectile[4]] != 1:
-                    animation1('Bot ha usato vetrino: ')
-                    players = usavetrino(players, turns, iprojectile, projectiles, 1)
+                    animation1(language['botusedlens'])
+                    players = usavetrino(language, players, turns, iprojectile, projectiles, 1)
                 if randint(0,100) <= 10 and players[1][2][5] > 0:
-                    animation1('Bot ha usato polarizzatore: ')
-                    players, projectiles = usapolarizzatore(players, turns, iprojectile, projectiles, 1)
+                    animation1(language['botusedinverter'])
+                    players, projectiles = usapolarizzatore(language, players, turns, iprojectile, projectiles, 1)
                 if randint(0,100) <= 80 and players[1][2][6] > 0:
-                    animation1('Bot ha usato telefono: ')
-                    players = usatelefono(players, turns, projectiles, iprojectile, 1)
+                    animation1(language['botusedphone'])
+                    players = usatelefono(language, players, turns, projectiles, iprojectile, 1)
             else:
                 if players[1][3][iprojectile[4]] == 1:
                     if players[1][2][5] > 0 and projectiles[iprojectile[4]] == 0:
-                        animation1('Bot ha usato polarizzatore: ')
-                        players, projectiles = usapolarizzatore(players, turns, iprojectile, projectiles, 1)
+                        animation1(language['botusedinverter'])
+                        players, projectiles = usapolarizzatore(language, players, turns, iprojectile, projectiles, 1)
                     if players[1][2][3] > 0 and iprojectile[3] != 2 and projectiles[iprojectile[4]] == 1:
-                        animation1('Bot ha usato coltellino: ')
-                        players, iprojectile = usacoltellino(players, turns, iprojectile, 1)
+                        animation1(language['botusedcig'])
+                        players, iprojectile = usacoltellino(language, players, turns, iprojectile, 1)
                     if projectiles[iprojectile[4]] == 0:
-                        animation1('Bot ha usato Fucile su se stesso: ')
-                        iprojectile = usafucileiovuoto(iprojectile)
+                        animation1(language['botusedgunhimself'])
+                        iprojectile = usafucileiovuoto(language, iprojectile)
                         if controllo(projectiles, iprojectile) == 1: break
                         continue
                     else:
-                        animation1(f'Bot ha usato Fucile su {players[turns[1]][0]}: ')
-                        players, iprojectile = usafucilenemicopieno(players, turns, iprojectile)
+                        animation1(f'{language['botusedgunenemy']}{players[turns[1]][0]}: ')
+                        players, iprojectile = usafucilenemicopieno(language, players, turns, iprojectile)
                         break
                 elif randint(0,100) <= 20:
                     if projectiles[iprojectile[4]] == 1:
-                        animation1(f'Bot ha usato Fucile su se stesso: ')
-                        players, iprojectile = usafucileiopieno(players, turns, iprojectile)
+                        animation1(language['botusedgunhimself'])
+                        players, iprojectile = usafucileiopieno(language, players, turns, iprojectile)
                         break
                     else:
-                        animation1(f'Bot ha usato Fucile su se stesso: ')
-                        iprojectile = usafucileiovuoto(iprojectile)
+                        animation1(language['botusedgunhimself'])
+                        iprojectile = usafucileiovuoto(language, iprojectile)
                         if controllo(projectiles, iprojectile) == 1: break
                         continue
                 else:
                     if projectiles[iprojectile[4]] == 1:
-                        animation1(f'Bot ha usato Fucile su {players[turns[1]][0]}: ')
-                        players, iprojectile = usafucilenemicopieno(players, turns, iprojectile)
+                        animation1(f'{language['botusedgunenemy']} {players[turns[1]][0]}: ')
+                        players, iprojectile = usafucilenemicopieno(language, players, turns, iprojectile)
                         break
                     else:
-                        animation1(f'Bot ha usato Fucile su {players[turns[1]][0]}: ')
-                        iprojectile = usafucilenemicovuoto(iprojectile)
+                        animation1(f'{language['botusedgunenemy']} {players[turns[1]][0]}: ')
+                        iprojectile = usafucilenemicovuoto(language, iprojectile)
                         break
             break
         return players, iprojectile
 
-def playergameplay(players, turns,  iprojectile, projectiles):  #->
-    animation2(f"{Back.BLUE}Turno di {players[turns[0]][0]}\n{Style.RESET_ALL}Hai:")
+def playergameplay(language, players, turns,  iprojectile, projectiles):  #->
+    animation2(f"{Back.BLUE}{language['turnof']} {players[turns[0]][0]}\n{Style.RESET_ALL}{language['uhave']}")
     if players[turns[0]][2][0] == 1:
-        animation2(f"- {players[turns[0]][2][0]} pacchetto di sigarette(Rigenerano una vita)")
+        animation2(f"- {players[turns[0]][2][0]} {language['ipackofcig']}")
     elif players[turns[0]][2][0] > 1:
-        animation2(f"- {players[turns[0]][2][0]} pacchetti di sigarette(Rigenerano una vita)")
+        animation2(f"- {players[turns[0]][2][0]} {language['ipacksofcig']}")
     if players[turns[0]][2][1] == 1:
-        animation2(f"- {players[turns[0]][2][1]} paio di manette(Fanno Saltare un turno al nemico/prossimo giocatore)")
+        animation2(f"- {players[turns[0]][2][1]} {language['ipairhandcuff']}")
     elif players[turns[0]][2][1] > 1:
-        animation2(f"- {players[turns[0]][2][1]} paia di manette(Fanno Saltare un turno al nemico/prossimo giocatore)")
+        animation2(f"- {players[turns[0]][2][1]} {language['ipairshandcuffs']}")
     if players[turns[0]][2][2] == 1:
-        animation2(f"- {players[turns[0]][2][2]} lattina di birra(Rimuove un proiettile a caso dal fucile)")
+        animation2(f"- {players[turns[0]][2][2]} {language['ibeer']}")
     elif players[turns[0]][2][2] > 1:
-        animation2(f"- {players[turns[0]][2][2]} lattine di birra(Rimuove un proiettile a caso dal fucile)")
+        animation2(f"- {players[turns[0]][2][2]} {language['ibeers']}")
     if players[turns[0]][2][3] == 1:
-        animation2(f"- {players[turns[0]][2][3]} coltellino(Il fucile fa il doppio del danno al prossimo utilizzo)")
+        animation2(f"- {players[turns[0]][2][3]} {language['ihandsaw']}")
     elif players[turns[0]][2][3] > 1:
-        animation2(f"- {players[turns[0]][2][3]} coltellini(Il fucile fa il doppio del danno al prossimo utilizzo)")
+        animation2(f"- {players[turns[0]][2][3]} {language['ihandsaws']}")
     if players[turns[0]][2][4] == 1:
-        animation2(f"- {players[turns[0]][2][4]} vetrino(Mostra il prossimo proiettile)")
+        animation2(f"- {players[turns[0]][2][4]} {language['i1lens']}")
     elif players[turns[0]][2][4] > 1:
-        animation2(f"- {players[turns[0]][2][4]} vetrini(Mostra il prossimo proiettile)")
+        animation2(f"- {players[turns[0]][2][4]} {language['imorelens']}")
     if players[turns[0]][2][5] == 1:
-        animation2(f"- {players[turns[0]][2][5]} polarizzatore(Cambia il proiettile da pieno a vuoto e viceversa)")
+        animation2(f"- {players[turns[0]][2][5]} {language['iinverter']}")
     elif players[turns[0]][2][5] > 1:
-        animation2(f"- {players[turns[0]][2][5]} polarizzatori(Cambia il proiettile da pieno a vuoto e viceversa)")
+        animation2(f"- {players[turns[0]][2][5]} {language['iinverters']}")
     if players[turns[0]][2][6] == 1:
-        animation2(f"- {players[turns[0]][2][6]} telefono(Dice se un proiettile a caso rimanente e' pieno o vuoto)")
+        animation2(f"- {players[turns[0]][2][6]} {language['iphone']}")
     elif players[turns[0]][2][6] > 1:
-        animation2(f"- {players[turns[0]][2][6]} telefoni(Dice se un proiettile a caso rimanente e' pieno o vuoto)")
+        animation2(f"- {players[turns[0]][2][6]} {language['iphones']}")
     if players[turns[0]][1] == 1:
-        animation2(f"- {players[turns[0]][1]} vita")
+        animation2(f"- {players[turns[0]][1]} {language['life']}")
     elif players[turns[0]][1] > 1:
-        animation2(f"- {players[turns[0]][1]} vite")
+        animation2(f"- {players[turns[0]][1]} {language['lifes']}")
     while 1:
-        animation2("Scrivi Cosa Vuoi Usare:")
-        if players[turns[0]][2][0] > 0: animation1("Sigarette o ")
-        if players[turns[0]][2][1] > 0: animation1("Manette o ")
-        if players[turns[0]][2][2] > 0: animation1("Birra o ")
-        if players[turns[0]][2][3] > 0: animation1("Coltellino o ")
-        if players[turns[0]][2][4] > 0: animation1("Vetrino o ")
-        if players[turns[0]][2][5] > 0: animation1("Polarizzatore o ")
-        if players[turns[0]][2][6] > 0: animation1("Telefono o ")
-        input2 = fixtext(input('Fucile: '))
-        if input2 == "sigarette":
-            players = usasigarette(players, turns)
-        elif input2 == "manette":
-            players, iprojectile = usamanette(players, turns, iprojectile)
-        elif input2 == "birra":
-            players, iprojectile, projectiles = usabirra(players, turns, iprojectile, projectiles)
+        animation2(language['whatuwantuse'])
+        if players[turns[0]][2][0] > 0: animation1(language['cigarettsor'])
+        if players[turns[0]][2][1] > 0: animation1(language['handcuffsor'])
+        if players[turns[0]][2][2] > 0: animation1(language['beeror'])
+        if players[turns[0]][2][3] > 0: animation1(language['sawor'])
+        if players[turns[0]][2][4] > 0: animation1(language['lensor'])
+        if players[turns[0]][2][5] > 0: animation1(language['inverteror'])
+        if players[turns[0]][2][6] > 0: animation1(language['phoneor'])
+        animation1(language['Gun'] + ': ')
+        input2 = fixtext(input())
+        if input2 == language['cig']:
+            players = usasigarette(language, players, turns)
+        elif input2 == language['cuffs']:
+            players, iprojectile = usamanette(language, players, turns, iprojectile)
+        elif input2 == language['beer']:
+            players, iprojectile, projectiles = usabirra(language, players, turns, iprojectile, projectiles)
             if controllo(projectiles, iprojectile) == 1: break
-        elif input2 == "coltellino":
-            players, iprojectile = usacoltellino(players, turns, iprojectile)
-        elif input2 == "vetrino":
-            players = usavetrino(players, turns, iprojectile, projectiles)
-        elif input2 == "polarizzatore":
-            players, projectiles = usapolarizzatore(players, turns, iprojectile, projectiles)
-        elif input2 == "telefono":
-            players = usatelefono(players, turns, projectiles, iprojectile)
-        elif input2 == "fucile":
+        elif input2 == language['saw']:
+            players, iprojectile = usacoltellino(language, players, turns, iprojectile)
+        elif input2 == language['lens']:
+            players = usavetrino(language, players, turns, iprojectile, projectiles)
+        elif input2 == language['inv']:
+            players, projectiles = usapolarizzatore(language, players, turns, iprojectile, projectiles)
+        elif input2 == language['phone']:
+            players = usatelefono(language, players, turns, projectiles, iprojectile)
+        elif input2 == language['gun']:
             while True:
-                input3 = input(f'Spari su te stesso(Io) o su {players[turns[1]][0]}(Nemico)? ')
-                if input3.lower().strip() == 'io' or input3.lower().strip() == 'nemico' or input3.lower().strip() == \
-                        players[turns[1]][0].lower().strip():
+                animation1(f'{language['gunask']} {players[turns[1]][0]}({language['Enemy']})? ')
+                input3 = fixtext(input())
+                if input3 == language['i'] or input3 == language['enemy'] or input3 == fixtext(players[turns[1]][0]):
                     break
                 else:
-                    animation2(f'Input non valido!')
-            if input3.lower().strip() == 'io':
+                    animation2(language['errortypetxt'])
+            if input3.lower().strip() == language['i']:
                 if projectiles[iprojectile[4]] == 1:
-                    players, iprojectile = usafucileiopieno(players, turns, iprojectile)
+                    players, iprojectile = usafucileiopieno(language, players, turns, iprojectile)
                     break
                 else:
-                    iprojectile = usafucileiovuoto(iprojectile)
+                    iprojectile = usafucileiovuoto(language, iprojectile)
                     if controllo(projectiles, iprojectile) == 1: break
             else:
                 if projectiles[iprojectile[4]] == 1:
-                    players, iprojectile = usafucilenemicopieno(players, turns, iprojectile)
+                    players, iprojectile = usafucilenemicopieno(language, players, turns, iprojectile)
                     break
                 else:
-                    iprojectile= usafucilenemicovuoto(iprojectile)
+                    iprojectile= usafucilenemicovuoto(language, iprojectile)
                     break
         else:
-            animation2('Input non valido!')
+            animation2(language['errortypetxt'])
     return players, iprojectile, projectiles

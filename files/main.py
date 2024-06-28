@@ -11,8 +11,8 @@ while 1:
     if iprojectile[0] == 0:
         iprojectile, projectiles = regenprojectiles(language, players)
         players = genoggetti(language, players)
-    iprojectile, turns = ctrlturni(players, iprojectile, turns)
-    if players[turns[0]][0] == 'Bot': players, iprojectile = botgameplay(players, turns, iprojectile, projectiles)
+    iprojectile, turns = ctrlturni(language, players, iprojectile, turns)
+    if players[turns[0]][0] == 'Bot': players, iprojectile = botgameplay(language, players, turns, iprojectile, projectiles)
     elif players[turns[0]][1] < 1: pass
-    else: players, iprojectile, projectiles = playergameplay(players, turns, iprojectile, projectiles)
+    else: players, iprojectile, projectiles = playergameplay(language, players, turns, iprojectile, projectiles)
 print(f'\n{Fore.BLUE}{players[0][0]} {language['haswon']}')
